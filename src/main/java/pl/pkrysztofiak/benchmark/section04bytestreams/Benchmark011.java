@@ -21,7 +21,7 @@ public class Benchmark011 {
 
     @Setup
     public void setup() {
-        filepath = "D:/locations/mis60chazon/GZIK^DANUTA/390319_785/16509F5A/BB5EB75D/BB5EB7A0"; //133KB;
+        filepath = "C:/Users/Przemek/samples/GZIK^DANUTA/390319_785/16509F5A/BB5EB75D/BB5EB7A0"; //133KB;
         file = new File(filepath);
     }
 
@@ -70,8 +70,8 @@ public class Benchmark011 {
             System.arraycopy(buffer, 0, data, total, tally);
             total += tally;
         }
+        in.close();
 
-        in.read(data);
         return data;
 //        Benchmark                       Mode  Cnt  Score   Error  Units
 //        Benchmark011.readBytesToBuffer    ss       0,815          ms/op
