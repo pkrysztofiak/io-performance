@@ -46,12 +46,14 @@ public class Benchmark011 {
 //        Benchmark011.fileInputStream    ss    5  0,145 ± 0,008   s/op
     }
 
-//    @Benchmark
-//    @BenchmarkMode(Mode.SingleShotTime)
+    @Benchmark
+    @BenchmarkMode(Mode.SingleShotTime)
     public byte[] readBytesToArray() throws IOException {
-        var in = new FileInputStream(filepath);
-        in.read(data);
-        return data;
+        String path = "C:/Users/Przemek/samples/GZIK^DANUTA/390319_785/16509F5A/BB5EB75D/BB5EB7A0";
+        byte[] bytes = new byte[(int) new File(path).length()];
+        var in = new FileInputStream(path);
+        in.read(bytes);
+        return bytes;
 //        Benchmark                      Mode  Cnt  Score   Error  Units
 //        Benchmark011.readBytesToArray    ss       0,682          ms/op
 //
@@ -61,18 +63,19 @@ public class Benchmark011 {
     @Benchmark
     @BenchmarkMode(Mode.SingleShotTime)
     public byte[] readBytesToBuffer() throws IOException {
-
-        var in = new FileInputStream(filepath);
+        String path = "C:/Users/Przemek/samples/GZIK^DANUTA/390319_785/16509F5A/BB5EB75D/BB5EB7A0";
+        byte[] bytes = new byte[(int) new File(path).length()];
+        var in = new FileInputStream(path);
 
         int tally;
         int total = 0;
         while ((tally = in.read(buffer)) != -1) {
-            System.arraycopy(buffer, 0, data, total, tally);
+            System.arraycopy(buffer, 0, bytes, total, tally);
             total += tally;
         }
         in.close();
 
-        return data;
+        return bytes;
 //        Benchmark                       Mode  Cnt  Score   Error  Units
 //        Benchmark011.readBytesToBuffer    ss       0,815          ms/op
     }
