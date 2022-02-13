@@ -2,10 +2,7 @@ package pl.pkrysztofiak.benchmark.section04bytestreams;
 
 import org.openjdk.jmh.annotations.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -46,8 +43,8 @@ public class Benchmark011 {
 //        Benchmark011.fileInputStream    ss    5  0,145 ± 0,008   s/op
     }
 
-    @Benchmark
-    @BenchmarkMode(Mode.SingleShotTime)
+//    @Benchmark
+//    @BenchmarkMode(Mode.SingleShotTime)
     public byte[] readBytesToArray() throws IOException {
         String path = "C:/Users/Przemek/samples/GZIK^DANUTA/390319_785/16509F5A/BB5EB75D/BB5EB7A0";
         byte[] bytes = new byte[(int) new File(path).length()];
@@ -60,8 +57,8 @@ public class Benchmark011 {
 //        For 35k files it will take 23.87 seconds to read all files
     }
 
-    @Benchmark
-    @BenchmarkMode(Mode.SingleShotTime)
+//    @Benchmark
+//    @BenchmarkMode(Mode.SingleShotTime)
     public byte[] readBytesToBuffer() throws IOException {
         String path = "C:/Users/Przemek/samples/GZIK^DANUTA/390319_785/16509F5A/BB5EB75D/BB5EB7A0";
         byte[] bytes = new byte[(int) new File(path).length()];
@@ -78,5 +75,37 @@ public class Benchmark011 {
         return bytes;
 //        Benchmark                       Mode  Cnt  Score   Error  Units
 //        Benchmark011.readBytesToBuffer    ss       0,815          ms/op
+    }
+
+//    @Benchmark
+//    @BenchmarkMode(Mode.SingleShotTime)
+    public int readAndReturnTotal() throws IOException {
+//        byte[] buffer = new byte[8192];
+        byte[] buffer = new byte[16384];
+        var in = new FileInputStream("D:/locations/mis60chazon/GZIK^DANUTA/390319_785/16509F5A/BB5EB75D/BB5EB7DD");
+        int count;
+        int tally = 0;
+        while ((count = in.read(buffer)) != -1) {
+            tally += count;
+        }
+        in.close();
+        return tally;
+//        Benchmark                        Mode  Cnt  Score   Error  Units
+//        Benchmark011.readAndReturnTotal    ss       5,935          ms/op
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SingleShotTime)
+    public int bufferedInputStream() throws IOException {
+        var in = new BufferedInputStream(new FileInputStream("D:/locations/mis60chazon/GZIK^DANUTA/390319_785/16509F5A/BB5EB75D/BB5EB7E0"));
+        int counter = 0;
+        int b;
+        while ((b = in.read()) != -1) {
+            counter++;
+        }
+        in.close();
+        return counter;
+//        Benchmark                         Mode  Cnt  Score   Error  Units
+//        Benchmark011.bufferedInputStream    ss       8,069          ms/op
     }
 }
