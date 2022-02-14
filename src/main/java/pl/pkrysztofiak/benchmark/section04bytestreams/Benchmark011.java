@@ -3,6 +3,8 @@ package pl.pkrysztofiak.benchmark.section04bytestreams;
 import org.openjdk.jmh.annotations.*;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -15,6 +17,8 @@ public class Benchmark011 {
     private File file;
     private byte[] data;
     private byte[] buffer;
+
+    static byte[] buffer2 = new byte[8192];
 
     @Setup
     public void setup() {
@@ -94,8 +98,8 @@ public class Benchmark011 {
 //        Benchmark011.readAndReturnTotal    ss       5,935          ms/op
     }
 
-    @Benchmark
-    @BenchmarkMode(Mode.SingleShotTime)
+//    @Benchmark
+//    @BenchmarkMode(Mode.SingleShotTime)
     public int bufferedInputStream() throws IOException {
         var in = new BufferedInputStream(new FileInputStream("D:/locations/mis60chazon/GZIK^DANUTA/390319_785/16509F5A/BB5EB75D/BB5EB7E0"));
         int counter = 0;
@@ -107,5 +111,53 @@ public class Benchmark011 {
         return counter;
 //        Benchmark                         Mode  Cnt  Score   Error  Units
 //        Benchmark011.bufferedInputStream    ss       8,069          ms/op
+    }
+
+//    @Benchmark
+//    @BenchmarkMode(Mode.SingleShotTime)
+    public long walk() throws IOException {
+        return Files.walk(Path.of("D:/locations/mis60chazon/GZIK^DANUTA")).mapToLong(path -> read(path)).sum();
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.SingleShotTime)
+    public long walk2() throws IOException {
+        return Files.walk(Path.of("D:/locations/mis60chazon/GZIK^DANUTA")).mapToLong(path -> read2(path)).sum();
+    }
+
+    private static long read(Path path) {
+//        System.out.println(path.getFileName());
+        if (!Files.isRegularFile(path)) {
+            return 0;
+        }
+
+        long tally = 0;
+        try (var in = Files.newInputStream(path)) {
+            int count;
+            while ((count = in.read(buffer2)) != -1) {
+                tally += count;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return tally;
+    }
+
+    private static long read2(Path path) {
+//        System.out.println(path.getFileName());
+        if (!Files.isRegularFile(path)) {
+            return 0;
+        }
+        long tally = 0;
+
+        try (var in = new FileInputStream(path.toFile())) {
+            int count;
+            while ((count = in.read(buffer2)) != -1) {
+                tally += count;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return tally;
     }
 }
